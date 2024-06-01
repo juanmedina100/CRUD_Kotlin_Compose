@@ -41,7 +41,7 @@ fun notasUpdate(id:String,navController: NavController, viewModel: NotasUpdateVi
     val myId = Uri.decode(id).toInt()
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Update Task -> $myId",modifier= Modifier.fillMaxWidth(),
+            TopAppBar(title = { Text(text = "Actualizar nota",modifier= Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center) },
                 actions = {
                     IconButton(onClick = {

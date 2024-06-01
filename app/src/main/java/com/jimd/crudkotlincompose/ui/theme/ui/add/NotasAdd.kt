@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,7 +36,7 @@ import com.example.myfirsappincomposeinnewinstalation.utils.MyEditTextCustomText
 fun notasApp(navController: NavController,viewModel: NotasViewModel = hiltViewModel()){
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Task",modifier=Modifier.fillMaxWidth(), textAlign = TextAlign.Center) }, actions = {
+            TopAppBar(title = { Text(text = "Agregar nota",modifier=Modifier.fillMaxWidth(), textAlign = TextAlign.Center) }, actions = {
                 if (viewModel.stateAdd.estado){
                 IconButton(onClick = {
                     viewModel.onEvent(NotasEvent.save)
@@ -44,7 +45,13 @@ fun notasApp(navController: NavController,viewModel: NotasViewModel = hiltViewMo
                         Icon(imageVector = Icons.Rounded.Done, contentDescription = "")
                     }
                 }
-            })
+            },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = "")
+                    }
+                }
+                )
         }
     ) {
         myNotasApp(it)
