@@ -6,6 +6,7 @@ import java.util.Date
 data class NotaState(
     val titulo:String="",
     val nota:String="",
+    val idNota:Int = 0,
     val fecha_creada: Date = Date(),
     val isLoadin:Boolean = false,
     val notas:List<NotasEntity> = emptyList(),

@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jimd.crudkotlincompose.data.entities.NotasEntity
+import com.jimd.crudkotlincompose.data.repository.model.NotasModel
 import com.jimd.crudkotlincompose.domain.NotasRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,21 +41,12 @@ class NotasViewModel @Inject constructor(
     fun insertNota(){
         viewModelScope.launch(Dispatchers.IO) {
             repo.insertNota(
-                NotasEntity(
-                    id = 0,
+                NotasModel(
                     titulo = stateAdd.titulo,
                     nota = stateAdd.nota,
-                    fecha_creada = Date()
+                    idNota = stateAdd.idNota
                 )
             )
         }
     }
-//    fun getAllNotas(){
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val notas = repo.getAllNotas()
-//            stateAdd = stateAdd.copy(
-//                notas = notas
-//            )
-//        }
-//    }
 }

@@ -2,6 +2,8 @@ package com.jimd.crudkotlincompose.ui.theme.ui.home
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,10 +14,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -34,6 +38,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,6 +48,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.jimd.crudkotlincompose.data.entities.NotasEntity
+import com.jimd.crudkotlincompose.data.repository.model.EtiquetasModelAll
+import com.jimd.crudkotlincompose.data.repository.model.NotasModelAll
 import com.jimd.crudkotlincompose.navegation.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,22 +72,43 @@ fun notasHome(navController: NavHostController) {
 @Composable
 fun myNotasHome(paddingValues: PaddingValues,navController: NavController,viewModel: NotasHomeViewModel= hiltViewModel()){
     LaunchedEffect(key1 = Unit){
+        viewModel.getAllEtiquetasForCont()
+        viewModel.getAllEtiquetas()
         viewModel.getAllNotas()
     }
     val state = viewModel.stateHome
+    Log.i("LOLO","Etiquetas-> ${state.etiquetas}")
+    val items1 = listOf<EtiquetasModelAll>(
+        EtiquetasModelAll(1,"General"),
+        EtiquetasModelAll(2,"Coronel"),
+        EtiquetasModelAll(3,"Soldado"),
+        EtiquetasModelAll(4,"Mantequilla")
+    )
+    val contexto = LocalContext.current
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(paddingValues)
         .padding(10.dp)){
-        LazyColumn{
-            items(state.notas){
-                myItemHome(it,navController)
+        Column {
+            LazyRow{
+                items(items1){
+                    Button(onClick = { Toast.makeText(contexto,"Id -> ${it.id}",Toast.LENGTH_LONG).show() }) {
+                        Text(text = it.detalle)
+                    }
+                }
+            }
+            LazyColumn{
+                //Aca las etiquetas
+
+                items(state.notas){
+                    myItemHome(it,navController)
+                }
             }
         }
     }
 }
 @Composable
-fun myItemHome(notasEntity: NotasEntity, navController: NavController,viewModel: NotasHomeViewModel= hiltViewModel()) {
+fun myItemHome(notasModelAll: NotasModelAll, navController: NavController,viewModel: NotasHomeViewModel= hiltViewModel()) {
 
     var validacion by rememberSaveable {
         mutableStateOf(false)
@@ -90,7 +118,7 @@ fun myItemHome(notasEntity: NotasEntity, navController: NavController,viewModel:
         .fillMaxWidth()
         .padding(5.dp)
         .clickable {
-            navController.navigate(Routes.update.routes + "/${Uri.encode(notasEntity.id.toString())}")
+            navController.navigate(Routes.update.routes + "/${Uri.encode(notasModelAll.id.toString())}")
         }, colors = CardDefaults.cardColors(MaterialTheme.colorScheme.onSecondary),
         elevation = CardDefaults.cardElevation(2.dp)) {
         Column(modifier= Modifier
@@ -98,8 +126,8 @@ fun myItemHome(notasEntity: NotasEntity, navController: NavController,viewModel:
             .padding(10.dp)) {
             Row(modifier=Modifier.fillMaxWidth()) {
              Column(modifier=Modifier.weight(1f)) {
-                 Text(text = notasEntity.titulo, modifier = Modifier.fillMaxWidth(), maxLines = 2, fontWeight = FontWeight.Bold)
-                 Text(text = notasEntity.nota,modifier=Modifier.fillMaxWidth(), maxLines = 4)
+                 Text(text = notasModelAll.titulo, modifier = Modifier.fillMaxWidth(), maxLines = 2, fontWeight = FontWeight.Bold)
+                 Text(text = notasModelAll.nota,modifier=Modifier.fillMaxWidth(), maxLines = 4)
              }
                 IconButton(onClick = { 
                                      validacion = true
@@ -111,7 +139,6 @@ fun myItemHome(notasEntity: NotasEntity, navController: NavController,viewModel:
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun alertaBorrar(valido:Boolean, onDismissRequest:()->Unit, onConfirm:()->Unit){
     if (valido){
@@ -128,7 +155,8 @@ fun alertaBorrar(valido:Boolean, onDismissRequest:()->Unit, onConfirm:()->Unit){
                 Text(
                     text = "Eliminar nota",
                     modifier = Modifier
-                        .fillMaxWidth().padding(bottom = 15.dp)
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp)
                         .wrapContentSize(Alignment.Center),
                     textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, fontSize = 18.sp
                 )
@@ -142,12 +170,14 @@ fun alertaBorrar(valido:Boolean, onDismissRequest:()->Unit, onConfirm:()->Unit){
                 Divider(modifier=Modifier.padding(vertical = 25.dp))
                 Row {
                     Text(text = "Cancelar",modifier= Modifier
-                        .fillMaxWidth().weight(0.1f)
+                        .fillMaxWidth()
+                        .weight(0.1f)
                         .clickable {
                             onDismissRequest()
                         }, textAlign = TextAlign.End)
                     Text(text = "Confirmar",modifier= Modifier
-                        .fillMaxWidth().weight(0.1f)
+                        .fillMaxWidth()
+                        .weight(0.1f)
                         .clickable {
                             onConfirm()
                             onDismissRequest()
@@ -159,3 +189,4 @@ fun alertaBorrar(valido:Boolean, onDismissRequest:()->Unit, onConfirm:()->Unit){
         }
     }
 }
+

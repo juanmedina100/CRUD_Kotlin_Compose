@@ -6,12 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jimd.crudkotlincompose.data.entities.NotasEntity
+import com.jimd.crudkotlincompose.data.repository.model.NotasModelForUpdateAndDelete
 import com.jimd.crudkotlincompose.domain.NotasRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,13 +44,11 @@ class NotasUpdateViewModel @Inject constructor(
     }
     fun notasUpdate(){
         viewModelScope.launch(Dispatchers.IO) {
-            Log.i("LOLO","id de nota en update -> ${stateUpdate.id}")
             repo.notasUpdate(
-                NotasEntity(
+                NotasModelForUpdateAndDelete(
                     id = stateUpdate.id,
                     titulo = stateUpdate.titulo,
-                    nota = stateUpdate.nota,
-                    fecha_creada = Date()
+                    nota = stateUpdate.nota
                 )
             )
         }
