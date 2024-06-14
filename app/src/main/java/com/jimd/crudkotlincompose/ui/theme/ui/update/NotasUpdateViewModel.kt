@@ -39,7 +39,11 @@ class NotasUpdateViewModel @Inject constructor(
                     id = notasUpdateEvent.id
                 )
             }
-            else -> {}
+            is NotasUpdateEvent.onIdEtiqueta -> {
+                stateUpdate = stateUpdate.copy(
+                    idEtiqueta = notasUpdateEvent.idEtiqueta
+                )
+            }
         }
     }
     fun notasUpdate(){
@@ -48,7 +52,8 @@ class NotasUpdateViewModel @Inject constructor(
                 NotasModelForUpdateAndDelete(
                     id = stateUpdate.id,
                     titulo = stateUpdate.titulo,
-                    nota = stateUpdate.nota
+                    nota = stateUpdate.nota,
+                    idNota = stateUpdate.idEtiqueta
                 )
             )
         }
@@ -58,7 +63,8 @@ class NotasUpdateViewModel @Inject constructor(
             val nota = repo.getNotaForId(id)
             stateUpdate = stateUpdate.copy(
                 titulo = nota.titulo,
-                nota = nota.nota
+                nota = nota.nota,
+                idEtiqueta = nota.idEtiqueta
             )
         }
     }

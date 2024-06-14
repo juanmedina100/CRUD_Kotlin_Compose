@@ -9,6 +9,7 @@ import com.jimd.crudkotlincompose.data.mappers.toModelAll
 import com.jimd.crudkotlincompose.data.mappers.toModelForUpdate
 import com.jimd.crudkotlincompose.data.repository.model.EtiquetasModelAll
 import com.jimd.crudkotlincompose.data.repository.model.EtiquetasModelForInsert
+import com.jimd.crudkotlincompose.data.repository.model.EtiquetasModelInsert
 import com.jimd.crudkotlincompose.data.repository.model.NotasModel
 import com.jimd.crudkotlincompose.data.repository.model.NotasModelAll
 import com.jimd.crudkotlincompose.data.repository.model.NotasModelForUpdate
@@ -42,6 +43,10 @@ class NotasRepositoryImpl @Inject constructor(
         dao.insertEtiquetaIfDbIsEmpty(etiquetasModelForInsert.toEntity())
     }
 
+    override suspend fun insertEtiqueta(etiquetasModelInsert: EtiquetasModelInsert) {
+        dao.insertEtiqueta(etiquetasModelInsert.toEntity())
+    }
+
     override suspend fun insertNota(notasModel: NotasModel) {
         dao.insertNota(notasModel.toEntityForInsert())
     }
@@ -52,6 +57,16 @@ class NotasRepositoryImpl @Inject constructor(
                 entity.map {
                     it.toModelAll()
                 }
+            }
+        }catch (e:Exception){
+            flow { emptyList<NotasModelAll>() }
+        }
+    }
+
+    override fun getAllNotasForEtiqueta(id: Int): Flow<List<NotasModelAll>> {
+        return try {
+            dao.getAllNotasForEtiqueta(id).map { notas->
+                notas.map { it.toModelAll() }
             }
         }catch (e:Exception){
             flow { emptyList<NotasModelAll>() }

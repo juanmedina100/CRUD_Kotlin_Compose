@@ -10,5 +10,6 @@ data class NotaUpdateState(
     val fecha_creada: Date = Date(),
     val isLoadin:Boolean = false,
     val notas:List<NotasEntity> = emptyList(),
-    val estado:Boolean = false
+    val estado:Boolean = false,
+    val idEtiqueta:Int=0
 )

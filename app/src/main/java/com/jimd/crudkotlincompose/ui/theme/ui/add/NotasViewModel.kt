@@ -1,11 +1,13 @@
 package com.jimd.crudkotlincompose.ui.theme.ui.add
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jimd.crudkotlincompose.data.entities.NotasEntity
+import com.jimd.crudkotlincompose.data.repository.model.EtiquetasModelInsert
 import com.jimd.crudkotlincompose.data.repository.model.NotasModel
 import com.jimd.crudkotlincompose.domain.NotasRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,6 +37,17 @@ class NotasViewModel @Inject constructor(
                     nota = notasEvent.nota
                 )
             }
+            is NotasEvent.onChangeEtiqueta -> {
+                stateAdd = stateAdd.copy(
+                    idEtiqueta = notasEvent.idEtiqueta
+                )
+            }
+            NotasEvent.saveEtiqueta -> { insertEtiqueta() }
+            is NotasEvent.newEtiqueta -> {
+                stateAdd = stateAdd.copy(
+                    newEtiqueta = notasEvent.Etiqueta
+                )
+            }
         }
     }
 
@@ -44,7 +57,26 @@ class NotasViewModel @Inject constructor(
                 NotasModel(
                     titulo = stateAdd.titulo,
                     nota = stateAdd.nota,
-                    idNota = stateAdd.idNota
+                    idNota = if (stateAdd.idEtiqueta > 0) stateAdd.idEtiqueta else 1
+                )
+            )
+        }
+    }
+    fun getAllEtiquetas(){
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.getAllEtiquetas().collect{
+                stateAdd = stateAdd.copy(
+                    etiquetas = it
+                )
+            }
+        }
+    }
+
+    private fun insertEtiqueta(){
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.insertEtiqueta(
+                EtiquetasModelInsert(
+                    etiqueta = stateAdd.newEtiqueta
                 )
             )
         }

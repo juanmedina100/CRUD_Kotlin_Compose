@@ -7,8 +7,11 @@ data class StateHome(
     val isLoadin:Boolean = false,
     val notas:List<NotasModelAll> = emptyList(),
     val id:Int=0,
+    val idEtiqueta:Int=0,
     val titulo:String="",
     val nota:String="",
     val etiquetasEnDb:Int = 0,
-    val etiquetas:List<EtiquetasModelAll> = emptyList()
+    val etiquetas:List<EtiquetasModelAll> = emptyList(),
+    val newEtiqueta:String="",
+    val idABorrar:Int=0
 )

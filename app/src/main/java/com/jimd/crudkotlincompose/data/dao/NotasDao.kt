@@ -19,7 +19,8 @@ interface NotasDao {
     suspend fun getAllEtiquetasForCont():Int
     @Insert
     suspend fun insertEtiquetaIfDbIsEmpty(etiquetaEntity: EtiquetaEntity)
-
+    @Insert
+    suspend fun insertEtiqueta(etiquetaEntity: EtiquetaEntity)
 
 
 

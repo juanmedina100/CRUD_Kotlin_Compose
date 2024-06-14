@@ -47,10 +47,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.jimd.crudkotlincompose.data.entities.NotasEntity
-import com.jimd.crudkotlincompose.data.repository.model.EtiquetasModelAll
+import com.example.myfirsappincomposeinnewinstalation.utils.MyButtonNormal
+import com.example.myfirsappincomposeinnewinstalation.utils.MyEditTextCustomText
 import com.jimd.crudkotlincompose.data.repository.model.NotasModelAll
 import com.jimd.crudkotlincompose.navegation.Routes
+import com.jimd.crudkotlincompose.ui.theme.ui.home.myAlertaNewEtiqueta
+import com.jimd.crudkotlincompose.ui.theme.ui.home.myAlertaNewEtiqueta as myAlertaNewEtiqueta1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -71,35 +73,42 @@ fun notasHome(navController: NavHostController) {
 
 @Composable
 fun myNotasHome(paddingValues: PaddingValues,navController: NavController,viewModel: NotasHomeViewModel= hiltViewModel()){
+    var agregandoEtiqueta by rememberSaveable {
+        mutableStateOf(false)
+    }
     LaunchedEffect(key1 = Unit){
         viewModel.getAllEtiquetasForCont()
         viewModel.getAllEtiquetas()
         viewModel.getAllNotas()
     }
     val state = viewModel.stateHome
-    Log.i("LOLO","Etiquetas-> ${state.etiquetas}")
-    val items1 = listOf<EtiquetasModelAll>(
-        EtiquetasModelAll(1,"General"),
-        EtiquetasModelAll(2,"Coronel"),
-        EtiquetasModelAll(3,"Soldado"),
-        EtiquetasModelAll(4,"Mantequilla")
-    )
     val contexto = LocalContext.current
+    alertaAddEtiqueta(state,valido = agregandoEtiqueta, onDismissRequest = { agregandoEtiqueta = false }, viewModel = viewModel) {
+        viewModel.onEvent(AddEtiquetasEvent.saveEtiqueta)
+    }
+
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(paddingValues)
         .padding(10.dp)){
         Column {
-            LazyRow{
-                items(items1){
-                    Button(onClick = { Toast.makeText(contexto,"Id -> ${it.id}",Toast.LENGTH_LONG).show() }) {
-                        Text(text = it.detalle)
+            Row(modifier=Modifier.fillMaxWidth()) {
+                LazyRow(modifier= Modifier
+                    .fillMaxWidth()
+                    .weight(1f)){
+                    items(state.etiquetas){
+                            Button(onClick = { Toast.makeText(contexto,"Id -> ${it.id}",Toast.LENGTH_LONG).show() }) {
+                                Text(text = it.detalle)
+                            }
+                    }
+                    item {
+                        IconButton(onClick = { agregandoEtiqueta = true }, modifier = Modifier) {
+                            Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                        }
                     }
                 }
             }
             LazyColumn{
-                //Aca las etiquetas
-
                 items(state.notas){
                     myItemHome(it,navController)
                 }
@@ -113,7 +122,10 @@ fun myItemHome(notasModelAll: NotasModelAll, navController: NavController,viewMo
     var validacion by rememberSaveable {
         mutableStateOf(false)
     }
-    alertaBorrar(valido = validacion,{ validacion = false}, onConfirm = { viewModel.deleteNota() })
+    alertaBorrar(notasModelAll,valido = validacion,{ validacion = false}, onConfirm = {
+        Log.i("LOLO","-> ${notasModelAll}")
+        viewModel.onEvent(AddEtiquetasEvent.deleteNota)
+    })
     Card(modifier= Modifier
         .fillMaxWidth()
         .padding(5.dp)
@@ -131,6 +143,7 @@ fun myItemHome(notasModelAll: NotasModelAll, navController: NavController,viewMo
              }
                 IconButton(onClick = { 
                                      validacion = true
+                    viewModel.onEvent(AddEtiquetasEvent.notaABorrar(notasModelAll.id))
                                      }, modifier = Modifier.align(alignment = Alignment.CenterVertically)) {
                     Icon(imageVector = Icons.Rounded.Delete, contentDescription = "")
                 }
@@ -140,7 +153,7 @@ fun myItemHome(notasModelAll: NotasModelAll, navController: NavController,viewMo
 }
 
 @Composable
-fun alertaBorrar(valido:Boolean, onDismissRequest:()->Unit, onConfirm:()->Unit){
+fun alertaBorrar(notasModelAll: NotasModelAll,valido:Boolean, onDismissRequest:()->Unit, onConfirm:()->Unit){
     if (valido){
         Dialog(onDismissRequest = { onDismissRequest() }) {
             Card(
@@ -161,7 +174,7 @@ fun alertaBorrar(valido:Boolean, onDismissRequest:()->Unit, onConfirm:()->Unit){
                     textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, fontSize = 18.sp
                 )
                 Text(
-                    text = "Estas seguro de eliminar esta nota",
+                    text = "¿Estas seguro de eliminar esta nota?",
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentSize(Alignment.Center),
@@ -190,3 +203,38 @@ fun alertaBorrar(valido:Boolean, onDismissRequest:()->Unit, onConfirm:()->Unit){
     }
 }
 
+@Composable
+fun alertaAddEtiqueta(
+    state: StateHome,
+    valido: Boolean,
+    onDismissRequest: () -> Unit,
+    viewModel: NotasHomeViewModel,
+    onConfirm: () -> Unit
+){
+    if (valido){
+        Dialog(onDismissRequest = { onDismissRequest() }) {
+            Card(colors = CardDefaults.cardColors(MaterialTheme.colorScheme.onSecondary)) {
+                Column(modifier= Modifier
+                    .fillMaxWidth()
+                    .padding(15.dp)) {
+                    Text(text = "Agregar Etiqueta")
+                    MyEditTextCustomText(text = state.newEtiqueta, label = "Etiqueta", onValueChange = {
+                        viewModel.onEvent(AddEtiquetasEvent.changeEtiqueta(it))
+                    }, modifier = Modifier.fillMaxWidth())
+                    MyButtonNormal(texto = "Agregar") {
+                        onConfirm()
+                        onDismissRequest()
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+@Composable
+fun myAlertaNewEtiqueta(){
+    IconButton(onClick = {  }, modifier = Modifier.fillMaxWidth()) {
+        Icon(imageVector = Icons.Default.Add, contentDescription = "")
+    }
+}
