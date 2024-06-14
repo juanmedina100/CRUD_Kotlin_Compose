@@ -15,6 +15,9 @@ interface NotasDao {
     @Query("select * from etiquetaentity order by id")
     fun getAllEtiquetas():Flow<List<EtiquetaEntity>>
 
+    @Query("select * from etiquetaentity where id=:id")
+    suspend fun getEtiqueta(id:Int):EtiquetaEntity
+
     @Query("select count(*) from etiquetaentity")
     suspend fun getAllEtiquetasForCont():Int
     @Insert
@@ -32,7 +35,7 @@ interface NotasDao {
     @Query("select * from NotasEntity")
     fun getAllNotas(): Flow<List<NotasEntity>>
 
-    @Query("select * from notasentity where id=:id order by id")
+    @Query("select * from notasentity where idEtiqueta=:id order by id")
     fun getAllNotasForEtiqueta(id:Int):Flow<List<NotasEntity>>
 
     @Update

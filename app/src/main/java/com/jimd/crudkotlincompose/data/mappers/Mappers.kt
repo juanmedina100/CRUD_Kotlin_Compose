@@ -41,7 +41,8 @@ fun NotasEntity.toModelAll():NotasModelAll{
     return NotasModelAll(
         id = this.id,
         titulo = this.titulo,
-        nota = this.nota
+        nota = this.nota,
+        etiqueta = ""
     )
 }
 fun EtiquetasModelForInsert.toEntity():EtiquetaEntity{

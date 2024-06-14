@@ -1,8 +1,8 @@
 package com.jimd.crudkotlincompose.data.repository
 
+import android.util.Log
 import com.jimd.crudkotlincompose.data.dao.NotasDao
 import com.jimd.crudkotlincompose.data.entities.EtiquetaEntity
-import com.jimd.crudkotlincompose.data.entities.NotasEntity
 import com.jimd.crudkotlincompose.data.mappers.toEntity
 import com.jimd.crudkotlincompose.data.mappers.toEntityForInsert
 import com.jimd.crudkotlincompose.data.mappers.toModelAll
@@ -18,6 +18,7 @@ import com.jimd.crudkotlincompose.domain.NotasRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import java.util.Date
 import javax.inject.Inject
 
 class NotasRepositoryImpl @Inject constructor(
@@ -32,6 +33,14 @@ class NotasRepositoryImpl @Inject constructor(
             }
         }catch (e:Exception){
             flow { emptyList<EtiquetasModelAll>() }
+        }
+    }
+
+    override suspend fun getEtiqueta(id: Int): EtiquetaEntity {
+        return  try {
+            dao.getEtiqueta(id)
+        }catch (e:Exception){
+            EtiquetaEntity(0,"", Date())
         }
     }
 
@@ -55,7 +64,12 @@ class NotasRepositoryImpl @Inject constructor(
         return try {
             dao.getAllNotas().map {entity->
                 entity.map {
-                    it.toModelAll()
+                    val etiqueta = getEtiqueta(it.idEtiqueta).detalle
+                    Log.i("LOLO","Despues de etiqueta -> $etiqueta")
+                    NotasModelAll(
+                        it.id, titulo = it.titulo, nota = it.nota, etiqueta = etiqueta
+                    )
+//                    it.toModelAll()
                 }
             }
         }catch (e:Exception){
@@ -66,7 +80,13 @@ class NotasRepositoryImpl @Inject constructor(
     override fun getAllNotasForEtiqueta(id: Int): Flow<List<NotasModelAll>> {
         return try {
             dao.getAllNotasForEtiqueta(id).map { notas->
-                notas.map { it.toModelAll() }
+                notas.map {
+                    val etiqueta = getEtiqueta(it.idEtiqueta).detalle
+                    NotasModelAll(
+                        it.id, titulo = it.titulo, nota = it.nota, etiqueta = etiqueta
+                    )
+//                    it.toModelAll()
+                }
             }
         }catch (e:Exception){
             flow { emptyList<NotasModelAll>() }

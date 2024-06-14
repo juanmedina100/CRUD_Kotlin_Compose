@@ -2,8 +2,8 @@ package com.jimd.crudkotlincompose.ui.theme.ui.home
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,8 +51,6 @@ import com.example.myfirsappincomposeinnewinstalation.utils.MyButtonNormal
 import com.example.myfirsappincomposeinnewinstalation.utils.MyEditTextCustomText
 import com.jimd.crudkotlincompose.data.repository.model.NotasModelAll
 import com.jimd.crudkotlincompose.navegation.Routes
-import com.jimd.crudkotlincompose.ui.theme.ui.home.myAlertaNewEtiqueta
-import com.jimd.crudkotlincompose.ui.theme.ui.home.myAlertaNewEtiqueta as myAlertaNewEtiqueta1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -96,8 +94,18 @@ fun myNotasHome(paddingValues: PaddingValues,navController: NavController,viewMo
                 LazyRow(modifier= Modifier
                     .fillMaxWidth()
                     .weight(1f)){
+                    item {
+                        Button(onClick = {
+                            viewModel.getAllNotas()
+                        }) {
+                            Text(text = "ALL")
+                        }
+                    }
                     items(state.etiquetas){
-                            Button(onClick = { Toast.makeText(contexto,"Id -> ${it.id}",Toast.LENGTH_LONG).show() }) {
+                            Button(onClick = {
+                                Toast.makeText(contexto,"Id -> ${it.id}",Toast.LENGTH_LONG).show()
+                                viewModel.getAllNotasForEtiqueta(it.id)
+                            }) {
                                 Text(text = it.detalle)
                             }
                     }
@@ -122,8 +130,7 @@ fun myItemHome(notasModelAll: NotasModelAll, navController: NavController,viewMo
     var validacion by rememberSaveable {
         mutableStateOf(false)
     }
-    alertaBorrar(notasModelAll,valido = validacion,{ validacion = false}, onConfirm = {
-        Log.i("LOLO","-> ${notasModelAll}")
+    alertaBorrar(valido = validacion,{ validacion = false}, onConfirm = {
         viewModel.onEvent(AddEtiquetasEvent.deleteNota)
     })
     Card(modifier= Modifier
@@ -138,6 +145,7 @@ fun myItemHome(notasModelAll: NotasModelAll, navController: NavController,viewMo
             .padding(10.dp)) {
             Row(modifier=Modifier.fillMaxWidth()) {
              Column(modifier=Modifier.weight(1f)) {
+                 Text(text = notasModelAll.etiqueta,modifier=Modifier.padding(5.dp).background(MaterialTheme.colorScheme.onSecondaryContainer), color = MaterialTheme.colorScheme.onPrimary, fontSize = 14.sp)
                  Text(text = notasModelAll.titulo, modifier = Modifier.fillMaxWidth(), maxLines = 2, fontWeight = FontWeight.Bold)
                  Text(text = notasModelAll.nota,modifier=Modifier.fillMaxWidth(), maxLines = 4)
              }
@@ -153,7 +161,7 @@ fun myItemHome(notasModelAll: NotasModelAll, navController: NavController,viewMo
 }
 
 @Composable
-fun alertaBorrar(notasModelAll: NotasModelAll,valido:Boolean, onDismissRequest:()->Unit, onConfirm:()->Unit){
+fun alertaBorrar(valido:Boolean, onDismissRequest:()->Unit, onConfirm:()->Unit){
     if (valido){
         Dialog(onDismissRequest = { onDismissRequest() }) {
             Card(
@@ -229,12 +237,5 @@ fun alertaAddEtiqueta(
             }
 
         }
-    }
-}
-
-@Composable
-fun myAlertaNewEtiqueta(){
-    IconButton(onClick = {  }, modifier = Modifier.fillMaxWidth()) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = "")
     }
 }

@@ -15,6 +15,8 @@ interface NotasRepository {
 
     //Etiquetas
     fun getAllEtiquetas():Flow<List<EtiquetasModelAll>>
+
+    suspend fun getEtiqueta(id:Int):EtiquetaEntity
     suspend fun getAllEtiquetasForCont():Int
     suspend fun insertEtiquetaIfDbIsEmpty(etiquetasModelForInsert: EtiquetasModelForInsert)
     suspend fun insertEtiqueta(etiquetasModelInsert: EtiquetasModelInsert)

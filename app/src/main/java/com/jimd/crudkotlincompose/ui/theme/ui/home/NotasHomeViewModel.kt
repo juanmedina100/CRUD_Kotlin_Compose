@@ -54,6 +54,7 @@ class NotasHomeViewModel @Inject constructor(
     fun getAllNotas(){
         viewModelScope.launch(Dispatchers.IO) {
             repo.getAllNotas().collect{
+                Log.i("LOLO","ViewModel -> $it")
                 stateHome = stateHome.copy(
                     notas = it
                 )
