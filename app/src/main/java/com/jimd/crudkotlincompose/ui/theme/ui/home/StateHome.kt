@@ -4,7 +4,7 @@ import com.jimd.crudkotlincompose.data.repository.model.EtiquetasModelAll
 import com.jimd.crudkotlincompose.data.repository.model.NotasModelAll
 
 data class StateHome(
-    val isLoadin:Boolean = false,
+    val isLoading:Boolean = false,
     val notas:List<NotasModelAll> = emptyList(),
     val id:Int=0,
     val idEtiqueta:Int=0,

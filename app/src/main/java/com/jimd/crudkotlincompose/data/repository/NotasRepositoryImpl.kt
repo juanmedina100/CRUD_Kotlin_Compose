@@ -67,7 +67,7 @@ class NotasRepositoryImpl @Inject constructor(
                     val etiqueta = getEtiqueta(it.idEtiqueta).detalle
                     Log.i("LOLO","Despues de etiqueta -> $etiqueta")
                     NotasModelAll(
-                        it.id, titulo = it.titulo, nota = it.nota, etiqueta = etiqueta
+                        it.id, titulo = it.titulo, nota = it.nota, etiqueta = etiqueta, fecha_creada = it.fecha_creada.toString()
                     )
 //                    it.toModelAll()
                 }
@@ -83,7 +83,7 @@ class NotasRepositoryImpl @Inject constructor(
                 notas.map {
                     val etiqueta = getEtiqueta(it.idEtiqueta).detalle
                     NotasModelAll(
-                        it.id, titulo = it.titulo, nota = it.nota, etiqueta = etiqueta
+                        it.id, titulo = it.titulo, nota = it.nota, etiqueta = etiqueta, fecha_creada = it.fecha_creada.toString()
                     )
 //                    it.toModelAll()
                 }

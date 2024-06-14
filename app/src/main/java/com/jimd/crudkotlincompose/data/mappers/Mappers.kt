@@ -42,7 +42,8 @@ fun NotasEntity.toModelAll():NotasModelAll{
         id = this.id,
         titulo = this.titulo,
         nota = this.nota,
-        etiqueta = ""
+        etiqueta = "",
+        fecha_creada = this.fecha_creada.toString()
     )
 }
 fun EtiquetasModelForInsert.toEntity():EtiquetaEntity{

@@ -52,11 +52,15 @@ class NotasHomeViewModel @Inject constructor(
     }
 
     fun getAllNotas(){
+        stateHome = stateHome.copy(
+            isLoading = true
+        )
         viewModelScope.launch(Dispatchers.IO) {
             repo.getAllNotas().collect{
                 Log.i("LOLO","ViewModel -> $it")
                 stateHome = stateHome.copy(
-                    notas = it
+                    notas = it,
+                    isLoading = false
                 )
                 it.map {nota->
                     stateHome = stateHome.copy(
@@ -69,10 +73,15 @@ class NotasHomeViewModel @Inject constructor(
         }
     }
     fun getAllNotasForEtiqueta(id: Int){
+        stateHome = stateHome.copy(
+            isLoading = true
+        )
         viewModelScope.launch(Dispatchers.IO) {
+//            Thread.sleep(3000)
             repo.getAllNotasForEtiqueta(id).collect{
                 stateHome = stateHome.copy(
-                    notas = it
+                    notas = it,
+                    isLoading = false
                 )
                 it.map {nota->
                     stateHome = stateHome.copy(

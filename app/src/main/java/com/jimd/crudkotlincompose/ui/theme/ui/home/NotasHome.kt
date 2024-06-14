@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -80,48 +83,65 @@ fun myNotasHome(paddingValues: PaddingValues,navController: NavController,viewMo
         viewModel.getAllNotas()
     }
     val state = viewModel.stateHome
-    val contexto = LocalContext.current
     alertaAddEtiqueta(state,valido = agregandoEtiqueta, onDismissRequest = { agregandoEtiqueta = false }, viewModel = viewModel) {
         viewModel.onEvent(AddEtiquetasEvent.saveEtiqueta)
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(paddingValues)
-        .padding(10.dp)){
-        Column {
-            Row(modifier=Modifier.fillMaxWidth()) {
-                LazyRow(modifier= Modifier
-                    .fillMaxWidth()
-                    .weight(1f)){
-                    item {
-                        Button(onClick = {
-                            viewModel.getAllNotas()
-                        }) {
-                            Text(text = "ALL")
-                        }
-                    }
-                    items(state.etiquetas){
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .padding(10.dp)){
+            Column {
+                Row(modifier=Modifier.fillMaxWidth()) {
+                    LazyRow(modifier= Modifier
+                        .fillMaxWidth()
+                        .weight(1f)){
+                        item {
                             Button(onClick = {
-                                Toast.makeText(contexto,"Id -> ${it.id}",Toast.LENGTH_LONG).show()
+                                viewModel.getAllNotas()
+                            },modifier=Modifier.padding(horizontal = 5.dp)) {
+                                Text(text = "ALL")
+                            }
+                        }
+                        items(state.etiquetas){
+                            Button(onClick = {
                                 viewModel.getAllNotasForEtiqueta(it.id)
                             }) {
                                 Text(text = it.detalle)
                             }
+                        }
+                        item {
+                            IconButton(onClick = { agregandoEtiqueta = true }, modifier = Modifier) {
+                                Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                            }
+                        }
                     }
-                    item {
-                        IconButton(onClick = { agregandoEtiqueta = true }, modifier = Modifier) {
-                            Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                }
+                if (state.notas.isEmpty()){
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                        Card(modifier= Modifier
+                            .fillMaxWidth()
+                            .padding(40.dp), colors = CardDefaults.cardColors(MaterialTheme.colorScheme.onSecondary), elevation = CardDefaults.cardElevation(4.dp)) {
+                            Column(modifier=Modifier.padding(40.dp)) {
+                                Text(text = "Sin notas",modifier=Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                            }
+                        }
+
+                    }
+                }else{
+                if (state.isLoading){
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                        CircularProgressIndicator()
+                    }
+                }else{
+                    LazyColumn{
+                        items(state.notas){
+                            myItemHome(it,navController)
                         }
                     }
                 }
             }
-            LazyColumn{
-                items(state.notas){
-                    myItemHome(it,navController)
-                }
-            }
-        }
+        }   
     }
 }
 @Composable
@@ -145,9 +165,12 @@ fun myItemHome(notasModelAll: NotasModelAll, navController: NavController,viewMo
             .padding(10.dp)) {
             Row(modifier=Modifier.fillMaxWidth()) {
              Column(modifier=Modifier.weight(1f)) {
-                 Text(text = notasModelAll.etiqueta,modifier=Modifier.padding(5.dp).background(MaterialTheme.colorScheme.onSecondaryContainer), color = MaterialTheme.colorScheme.onPrimary, fontSize = 14.sp)
+                 Text(text = notasModelAll.etiqueta,modifier= Modifier
+                     .padding(5.dp)
+                     .background(MaterialTheme.colorScheme.onSecondaryContainer), color = MaterialTheme.colorScheme.onPrimary, fontSize = 14.sp)
                  Text(text = notasModelAll.titulo, modifier = Modifier.fillMaxWidth(), maxLines = 2, fontWeight = FontWeight.Bold)
                  Text(text = notasModelAll.nota,modifier=Modifier.fillMaxWidth(), maxLines = 4)
+                 Text(text ="Creado "+ notasModelAll.fecha_creada, fontSize = 10.sp, fontStyle = FontStyle.Italic)
              }
                 IconButton(onClick = { 
                                      validacion = true
