@@ -1,16 +1,20 @@
 package com.example.myfirsappincomposeinnewinstalation.utils
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -108,7 +113,7 @@ fun myPrevi() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyEditTextCustomText(text:String,label: String, onValueChange: (String) -> Unit,modifier: Modifier){
+fun MyEditTextCustomText(text:String,label: String, onValueChange: (String) -> Unit,modifier: Modifier,fontSize: TextUnit){
 Column(modifier = modifier.fillMaxWidth()) {
     OutlinedTextField(
         value = text, onValueChange = onValueChange,
@@ -117,9 +122,14 @@ Column(modifier = modifier.fillMaxWidth()) {
             .padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)
             .height(70.dp)
             .background(Color.Transparent),
-        textStyle = TextStyle(Color.Black, fontSize = 20.sp),
+        textStyle = TextStyle(Color.Black, fontSize = fontSize),
         shape = RoundedCornerShape(12.dp),
         label = { Text(text = label) },
+//        colors = TextFieldDefaults.colors(
+//            focusedContainerColor = Color.Green,
+//            unfocusedContainerColor = Color.Red,
+//            focused
+//        ),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
     )
 }

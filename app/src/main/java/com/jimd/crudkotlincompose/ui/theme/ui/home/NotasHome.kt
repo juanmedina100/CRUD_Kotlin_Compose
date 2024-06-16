@@ -251,7 +251,7 @@ fun alertaAddEtiqueta(
                     Text(text = "Agregar Etiqueta")
                     MyEditTextCustomText(text = state.newEtiqueta, label = "Etiqueta", onValueChange = {
                         viewModel.onEvent(AddEtiquetasEvent.changeEtiqueta(it))
-                    }, modifier = Modifier.fillMaxWidth())
+                    }, modifier = Modifier.fillMaxWidth(), fontSize = 24.sp)
                     MyButtonNormal(texto = "Agregar") {
                         onConfirm()
                         onDismissRequest()

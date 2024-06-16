@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myfirsappincomposeinnewinstalation.utils.MyEditTextCustomText
@@ -74,11 +75,11 @@ fun myNotasApp(
         .fillMaxSize()
         .padding(paddingValues)){
         Column(modifier= Modifier.fillMaxWidth()) {
-            MyEditTextCustomText(modifier = Modifier,text = state.titulo, label = "Titulo", onValueChange = {
+            MyEditTextCustomText(modifier = Modifier, fontSize = 24.sp,text = state.titulo, label = "Titulo", onValueChange = {
                 viewModel.onEvent(NotasUpdateEvent.onChangeTitulo(it))
                 viewModel.onEvent(NotasUpdateEvent.onChangeId(id))
             })
-            MyEditTextCustomText(modifier = Modifier.fillMaxSize(),text = state.nota, label = "Nota", onValueChange = {
+            MyEditTextCustomText(modifier = Modifier.fillMaxSize(), fontSize = 16.sp,text = state.nota, label = "Nota", onValueChange = {
                 viewModel.onEvent(NotasUpdateEvent.onChangeNota(it))
                 viewModel.onEvent(NotasUpdateEvent.onChangeId(id))
             })
