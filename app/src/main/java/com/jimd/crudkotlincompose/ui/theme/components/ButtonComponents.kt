@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -64,6 +65,7 @@ fun MyButton(
     Button(onClick = { onClick() },modifier=modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         elevation = ButtonDefaults.buttonElevation(4.dp),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
         contentPadding = PaddingValues(start=35.dp,end=35.dp,top=20.dp, bottom = 20.dp)
         ) {
         Row {

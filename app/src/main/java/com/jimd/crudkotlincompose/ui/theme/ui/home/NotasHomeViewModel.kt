@@ -54,7 +54,6 @@ class NotasHomeViewModel @Inject constructor(
         )
         viewModelScope.launch(Dispatchers.IO) {
             repo.getAllNotas().collect{
-                Log.i("LOLO","ViewModel -> $it")
                 stateHome = stateHome.copy(
                     notas = it,
                     isLoading = false
@@ -74,7 +73,6 @@ class NotasHomeViewModel @Inject constructor(
             isLoading = true
         )
         viewModelScope.launch(Dispatchers.IO) {
-//            Thread.sleep(3000)
             repo.getAllNotasForEtiqueta(id).collect{
                 stateHome = stateHome.copy(
                     notas = it,
@@ -144,4 +142,5 @@ class NotasHomeViewModel @Inject constructor(
             }
         }
     }
+
 }

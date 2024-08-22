@@ -50,6 +50,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.myfirsappincomposeinnewinstalation.utils.MyButton
 import com.example.myfirsappincomposeinnewinstalation.utils.MyButtonNormal
 import com.example.myfirsappincomposeinnewinstalation.utils.MyEditTextCustomText
 import com.jimd.crudkotlincompose.data.repository.model.NotasModelAll
@@ -97,17 +98,13 @@ fun myNotasHome(paddingValues: PaddingValues,navController: NavController,viewMo
                         .fillMaxWidth()
                         .weight(1f)){
                         item {
-                            Button(onClick = {
+                            MyButton(texto = "ALL", modifier = Modifier.padding(horizontal = 2.dp)) {
                                 viewModel.getAllNotas()
-                            },modifier=Modifier.padding(horizontal = 5.dp)) {
-                                Text(text = "ALL")
                             }
                         }
                         items(state.etiquetas){
-                            Button(onClick = {
+                            MyButton(texto = it.detalle, modifier = Modifier.padding(horizontal = 2.dp)) {
                                 viewModel.getAllNotasForEtiqueta(it.id)
-                            }) {
-                                Text(text = it.detalle)
                             }
                         }
                         item {

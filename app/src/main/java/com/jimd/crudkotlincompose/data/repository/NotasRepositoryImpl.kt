@@ -69,7 +69,6 @@ class NotasRepositoryImpl @Inject constructor(
                     NotasModelAll(
                         it.id, titulo = it.titulo, nota = it.nota, etiqueta = etiqueta, fecha_creada = it.fecha_creada.toString()
                     )
-//                    it.toModelAll()
                 }
             }
         }catch (e:Exception){
